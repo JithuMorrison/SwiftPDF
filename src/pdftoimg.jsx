@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'SwiftPDF/pdf.worker.min.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/SwiftPDF/pdf.worker.min.mjs';
 
 const PdfToImage = () => {
   const [pdfUrl, setPdfUrl] = useState(null);
