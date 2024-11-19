@@ -1,105 +1,115 @@
-import React, { useState, useRef } from 'react';
-import { PDFDocument } from 'pdf-lib';
+import React, { useRef, useEffect, useState } from 'react';
+import * as pdfjsLib from 'pdfjs-dist';
 
-const PDFPageToImage = () => {
-  const [pdfFile, setPdfFile] = useState(null);
-  const [selectedPage, setSelectedPage] = useState(1);
-  const [pdfPageCount, setPdfPageCount] = useState(0);
-  const [previewUrl, setPreviewUrl] = useState(null);
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'SwiftPDF/pdf.worker.min.mjs';
+
+const PdfToImage = () => {
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [imageSrc, setImageSrc] = useState('');
+  const [pageNum, setPageNum] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const canvasRef = useRef(null);
 
-  // Handle PDF file upload
-  const handleFileChange = async (event) => {
+  const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file) {
-      setPdfFile(file);
-
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer);
-      setPdfPageCount(pdfDoc.getPages().length);
-
+    if (file && file.type === 'application/pdf') {
       const fileUrl = URL.createObjectURL(file);
-      setPreviewUrl(fileUrl);
+      setPdfUrl(fileUrl);
+    } else {
+      alert('Please select a valid PDF file.');
     }
   };
 
-  const handleConvertToImage = async () => {
-    if (!pdfFile || selectedPage < 1 || selectedPage > pdfPageCount) return;
-
-    const arrayBuffer = await pdfFile.arrayBuffer();
-    const pdfDoc = await PDFDocument.load(arrayBuffer);
-    const page = pdfDoc.getPages()[selectedPage - 1];
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    const scale = 2; // Scale factor for better resolution
-    const viewport = page.getSize();
-    canvas.width = viewport.width * scale;
-    canvas.height = viewport.height * scale;
-
-    // In pdf-lib, there's no direct method to render the PDF page onto the canvas,
-    // so we simulate rendering by drawing placeholder text (for now).
-    ctx.fillStyle = 'black';
-    ctx.font = '20px Arial';
-    ctx.fillText('Extracted content would go here', 10, 50);
-
-    // Convert canvas content to a Data URL (image)
-    const imgDataUrl = canvas.toDataURL('image/png');
-
-    // Set the preview image URL
-    setPreviewUrl(imgDataUrl);
-
-    // Optionally, trigger the download
-    const link = document.createElement('a');
-    link.href = imgDataUrl;
-    link.download = `page_${selectedPage}.png`; // Name the image file based on the page number
-    link.click();
+  const handlePageChange = (event) => {
+    const page = parseInt(event.target.value, 10);
+    if (page >= 1 && page <= totalPages) {
+      setPageNum(page);
+    }
   };
 
+  useEffect(() => {
+    const loadPdf = async () => {
+      if (!pdfUrl) return;
+
+      try {
+        const loadingTask = pdfjsLib.getDocument(pdfUrl);
+        const pdf = await loadingTask.promise;
+        setTotalPages(pdf.numPages); // Set the total number of pages
+
+        // Render the selected page
+        const page = await pdf.getPage(pageNum);
+        const viewport = page.getViewport({ scale: 1.5 });
+
+        const canvas = canvasRef.current;
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        const renderContext = {
+          canvasContext: context,
+          viewport: viewport,
+        };
+        await page.render(renderContext).promise;
+
+        // Convert canvas to image
+        setImageSrc(canvas.toDataURL());
+      } catch (error) {
+        console.error('Error loading or rendering PDF:', error);
+      }
+    };
+
+    loadPdf();
+  }, [pdfUrl, pageNum]); // Re-render when PDF URL or pageNum changes
+
   return (
-    <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
+    <div style={{display: 'flex',alignItems: 'center',justifyContent: 'center',height:'700px'}}>
       <div style={styles.container}>
-        <h2 style={styles.title}>Convert PDF Page to Image</h2>
-
-        {/* File input */}
-        <label style={styles.uploadLabel}>
-          Select a PDF File
-          <input type="file" accept="application/pdf" onChange={handleFileChange} style={styles.fileInput} />
-        </label>
-
-        {/* Page selection */}
-        <div style={styles.pageSelectionContainer}>
-          <label>
-            Select Page:
+      <h2 style={{ marginBottom: '20px' }}>PDF to Image Converter</h2>
+      <input type="file" accept="application/pdf" onChange={handleFileChange} style={styles.input} />
+      {pdfUrl && (
+        <div style={styles.pdfInfo}>
+          <div style={styles.pageControl}>
+            <label htmlFor="pageNumber">Page:</label>
             <input
+              id="pageNumber"
               type="number"
-              value={selectedPage}
-              onChange={(e) => setSelectedPage(Number(e.target.value))}
               min="1"
-              max={pdfPageCount}
-              style={styles.input}
+              max={totalPages}
+              value={pageNum}
+              onChange={handlePageChange}
+              style={styles.pageInput}
             />
-          </label>
+            <span>/ {totalPages}</span>
+          </div>
         </div>
-
-        {/* Convert button */}
-        <button onClick={handleConvertToImage} style={styles.convertButton}>
-          Convert to Image
-        </button>
+      )}
+      <canvas ref={canvasRef} style={{ display: 'none' }} />
+      {imageSrc ? (
+        <div style={styles.imageContainer}>
+          <img src={imageSrc} alt="PDF as Image" style={{ maxWidth: '400px' }} />
+          <a href={imageSrc} download={`pdf-page-${pageNum}.png`} style={{marginTop: '-70px'}}>
+            <button style={styles.downloadButton}>Download Page {pageNum}</button>
+          </a>
+        </div>
+      ) : (
+        <p>Loading PDF...</p>
+      )}
       </div>
-
-      {/* Preview image */}
       <div style={styles.previewContainer}>
-        <h3 style={styles.previewTitle}>PDF Page Preview</h3>
-        {previewUrl ? (
-          <img src={previewUrl} alt="PDF Preview" style={{ width: '100%', height: 'auto' }} />
+        <h3 style={styles.previewTitle}>PDF Preview</h3>
+        {pdfUrl ? (
+          <object
+            data={pdfUrl}
+            type="application/pdf"
+            width="100%"
+            height="88%"
+          >
+            <p>Alternative text - include a link <a href={pdfUrl}>to the PDF</a>!</p>
+          </object>
         ) : (
           <p>No PDF Selected</p>
         )}
       </div>
-
-      {/* Canvas element for rendering */}
-      <canvas ref={canvasRef} style={{ display: 'none' }} />
     </div>
   );
 };
@@ -109,53 +119,59 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'center',
     padding: '20px',
-    width: '400px',
     fontFamily: 'Arial, sans-serif',
-    border: '1px solid #ccc',
+    maxWidth: '600px',
+    marginRight: '30px',
+    border: '1px solid #ddd',
     borderRadius: '10px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    overflow: 'hidden',
+    paddingTop : '10px',
   },
-  title: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-    color: '#333',
+  input: {
+    marginBottom: '0px',
+    marginTop: '-10px',
   },
-  uploadLabel: {
-    display: 'block',
+  pdfInfo: {
+    marginBottom: '5px',
+    textAlign: 'center',
+  },
+  imageContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginTop: '10px',
+    border: '1px solid #ddd',
+    borderRadius: '10px',
+    backgroundColor: '#fff',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+  },
+  downloadButton: {
     padding: '10px 20px',
     backgroundColor: '#007BFF',
     color: '#fff',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    marginBottom: '20px',
-    fontSize: '16px',
-    textAlign: 'center',
-  },
-  fileInput: {
-    display: 'none',
-  },
-  pageSelectionContainer: {
-    marginBottom: '20px',
-  },
-  input: {
-    padding: '5px',
-    fontSize: '14px',
-    width: '80px',
-  },
-  convertButton: {
-    padding: '10px 20px',
-    backgroundColor: '#28A745',
-    color: '#fff',
-    borderRadius: '5px',
     border: 'none',
+    borderRadius: '5px',
     cursor: 'pointer',
     fontSize: '16px',
+  },
+  pageControl: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
     marginTop: '10px',
   },
+  pageInput: {
+    width: '50px',
+    padding: '5px',
+    textAlign: 'center',
+    border: '1px solid #ddd',
+    borderRadius: '5px',
+  },
   previewContainer: {
-    width: '550px',
+    width: '450px',
     height: '600px',
     border: '1px solid #ddd',
     borderRadius: '10px',
@@ -167,7 +183,7 @@ const styles = {
     fontSize: '18px',
     fontWeight: 'bold',
     marginBottom: '10px',
-  },
-};
+  }
+}
 
-export default PDFPageToImage;
+export default PdfToImage;

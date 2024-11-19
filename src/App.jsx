@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import PDFSplitter from './splitpdf';
 import PDFMerger from './mergepdf';
-import PDFPageToImage from './pdftoimg';
+import PDFToImage from './pdftoimg';
 import ImageToPDF from './img2pdf';
 
 function App() {
@@ -37,7 +37,7 @@ function App() {
               border: 'none', borderRadius: '5px',cursor: 'pointer',}} onClick={() => setCurrentSection(0)}>
               <div>Back</div>
             </button>
-            <PDFPageToImage/>
+            <PDFToImage/>
           </div>
         );
         case 4:
