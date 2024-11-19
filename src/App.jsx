@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './App.css';
 import PDFSplitter from './splitpdf';
 import PDFMerger from './mergepdf';
+import PDFPageToImage from './pdftoimg';
+import ImageToPDF from './img2pdf';
 
 function App() {
   const [currentSection, setCurrentSection] = useState(0);
@@ -28,6 +30,26 @@ function App() {
             <PDFSplitter/>
           </div>
         );
+      case 3:
+        return (
+          <div>
+            <button style={{position: 'absolute',top: '10px',right: '10px',padding: '10px 20px',backgroundColor: '#007BFF',color: 'white',
+              border: 'none', borderRadius: '5px',cursor: 'pointer',}} onClick={() => setCurrentSection(0)}>
+              <div>Back</div>
+            </button>
+            <PDFPageToImage/>
+          </div>
+        );
+        case 4:
+          return (
+            <div>
+              <button style={{position: 'absolute',top: '10px',right: '10px',padding: '10px 20px',backgroundColor: '#007BFF',color: 'white',
+                border: 'none', borderRadius: '5px',cursor: 'pointer',}} onClick={() => setCurrentSection(0)}>
+                <div>Back</div>
+              </button>
+              <ImageToPDF/>
+            </div>
+          );
       default:
         return (
           <div>
@@ -45,6 +67,20 @@ function App() {
                 <p>Split a single PDF into multiple parts.</p>
                 <button style={styles.button} onClick={() => setCurrentSection(2)}>
                   <div>Go to Splitter</div>
+                </button>
+              </div>
+              <div style={styles.card}>
+                <h2>Image from PDFs</h2>
+                <p>Convert a page to image from PDF.</p>
+                <button style={styles.button} onClick={() => setCurrentSection(3)}>
+                  <div>Go to PDF2Img</div>
+                </button>
+              </div>
+              <div style={styles.card}>
+                <h2>Image to PDFs</h2>
+                <p>Convert images to PDF.</p>
+                <button style={styles.button} onClick={() => setCurrentSection(4)}>
+                  <div>Go to Img2PDF</div>
                 </button>
               </div>
             </div>
