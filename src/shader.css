@@ -1,0 +1,68 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  
+  /* Card styling */
+  .card {
+    background: white;
+    padding: 20px;
+    width: 350px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  /* Title */
+  h2 {
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  /* Upload button */
+  .upload-btn {
+    display: inline-block;
+    background: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .upload-btn:hover {
+    background: #0056b3;
+  }
+  
+  .upload-btn input {
+    display: none;
+  }
+  
+  /* Loading text */
+  .loading {
+    margin-top: 15px;
+    color: #555;
+    font-size: 14px;
+  }
+  
+  /* Download button */
+  .download-btn {
+    display: block;
+    width: fit-content;
+    margin: 15px auto 0;
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+  
+  .download-btn:hover {
+    background: #218838;
+    color: white;
+  }
+  

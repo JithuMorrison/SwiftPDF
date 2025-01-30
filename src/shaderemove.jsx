@@ -1,24 +1,36 @@
 import React, { useState } from "react";
 import { PDFDocument } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
+import "./shader.css";
 
 // Set the worker source
 pdfjsLib.GlobalWorkerOptions.workerSrc = "/SwiftPDF/pdf.worker.min.mjs";
 
 export default function PDFProcessor() {
   const [processedPdf, setProcessedPdf] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [contrast,setContrast] = useState(140);
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
-    if (file) {
+    if (file && contrast >= 0 && contrast < 256) {
+      setLoading(true);
       const reader = new FileReader();
       reader.onload = async (e) => {
         const pdfBytes = new Uint8Array(e.target.result);
         const processedBytes = await processPDF(pdfBytes);
         setProcessedPdf(URL.createObjectURL(new Blob([processedBytes], { type: "application/pdf" })));
+        setLoading(false);
       };
       reader.readAsArrayBuffer(file);
     }
+    else{
+        alert("Check contrast");
+    }
+  };
+
+  const handleContrastChange = (event) => {
+    setContrast(event.target.value);
   };
 
   const processPDF = async (pdfBytes) => {
@@ -48,7 +60,7 @@ export default function PDFProcessor() {
       const data = imageData.data;
       for (let j = 0; j < data.length; j += 4) {
         const avg = (data[j] + data[j + 1] + data[j + 2]) / 3;
-        const newColor = avg > 140 ? 255 : 0; // Binarization
+        const newColor = avg > contrast ? 255 : 0; // Binarization
         data[j] = data[j + 1] = data[j + 2] = newColor;
       }
       ctx.putImageData(imageData, 0, 0);
@@ -63,10 +75,36 @@ export default function PDFProcessor() {
     return newPdf.save();
   };
 
+  const inputStyle = {
+    display: "block",
+    width: "fit-content",
+    margin: "15px auto 10px",
+    padding: "8px",
+    fontSize: "16px",
+    borderRadius: "4px",
+    marginBottom: "10px",
+    outline: "none",
+    transition: "border-color 0.3s",
+  };
+
   return (
-    <div>
-      <input type="file" accept="application/pdf" onChange={handleFileChange} />
-      {processedPdf && <a href={processedPdf} download="processed.pdf">Download Processed PDF</a>}
+    <div className="container">
+      <div className="card">
+        <h2>PDF Shader Removal</h2>
+        <input id="contrast-input" type="number" value={contrast} onChange={handleContrastChange} min="0" max="300" step="10" style={inputStyle} onFocus={(e) => (e.target.style.borderColor = inputFocusStyle.borderColor)} onBlur={(e) => (e.target.style.borderColor = "#28a745")}/>
+        <label htmlFor="pdf-upload" className="upload-btn">
+          Upload PDF
+          <input id="pdf-upload" type="file" accept="application/pdf" onChange={handleFileChange} />
+        </label>
+
+        {loading && <p className="loading">Processing PDF...</p>}
+
+        {processedPdf && (
+          <a href={processedPdf} download="processed.pdf" className="download-btn">
+            Download Processed PDF
+          </a>
+        )}
+      </div>
     </div>
   );
 }
