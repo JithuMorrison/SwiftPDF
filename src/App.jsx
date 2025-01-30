@@ -5,6 +5,7 @@ import PDFMerger from './mergepdf';
 import PDFToImage from './pdftoimg';
 import ImageToPDF from './img2pdf';
 import PDFPageRotator from './rotatepdf';
+import PDFProcessor from './shaderemove';
 
 function App() {
   const [currentSection, setCurrentSection] = useState(0);
@@ -61,6 +62,16 @@ function App() {
               <PDFPageRotator/>
             </div>
           );
+          case 6:
+            return (
+              <div>
+                <button style={{position: 'absolute',top: '10px',right: '10px',padding: '10px 20px',backgroundColor: '#007BFF',color: 'white',
+                  border: 'none', borderRadius: '5px',cursor: 'pointer',}} onClick={() => setCurrentSection(0)}>
+                  <div>Back</div>
+                </button>
+                <PDFProcessor/>
+              </div>
+            );
       default:
         return (
           <div>
@@ -99,6 +110,13 @@ function App() {
                 <p>Rotate selected pages.</p>
                 <button style={styles.button} onClick={() => setCurrentSection(5)}>
                   <div>Go to RotatePDF</div>
+                </button>
+              </div>
+              <div style={styles.card}>
+                <h2>Shade Remover</h2>
+                <p>Remove shades in pdfs.</p>
+                <button style={styles.button} onClick={() => setCurrentSection(6)}>
+                  <div>Go to Remover</div>
                 </button>
               </div>
             </div>
