@@ -6,6 +6,7 @@ import PDFToImage from './pdftoimg';
 import ImageToPDF from './img2pdf';
 import PDFPageRotator from './rotatepdf';
 import PDFProcessor from './shaderemove';
+import WordToPdf from './wordtopdf';
 
 function App() {
   const [currentSection, setCurrentSection] = useState(0);
@@ -72,6 +73,16 @@ function App() {
                 <PDFProcessor/>
               </div>
             );
+            case 7:
+              return (
+                <div>
+                  <button style={{position: 'absolute',top: '10px',right: '10px',padding: '10px 20px',backgroundColor: '#007BFF',color: 'white',
+                    border: 'none', borderRadius: '5px',cursor: 'pointer',}} onClick={() => setCurrentSection(0)}>
+                    <div>Back</div>
+                  </button>
+                  <WordToPdf/>
+                </div>
+              );
       default:
         return (
           <div>
@@ -117,6 +128,13 @@ function App() {
                 <p>Remove shades in pdfs.</p>
                 <button style={styles.button} onClick={() => setCurrentSection(6)}>
                   <div>Go to Remover</div>
+                </button>
+              </div>
+              <div style={styles.card}>
+                <h2>Word to PDF</h2>
+                <p>Convert Word to PDF</p>
+                <button style={styles.button} onClick={() => setCurrentSection(7)}>
+                  <div>Go to W2P</div>
                 </button>
               </div>
             </div>
