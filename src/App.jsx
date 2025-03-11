@@ -7,6 +7,7 @@ import ImageToPDF from './img2pdf';
 import PDFPageRotator from './rotatepdf';
 import PDFProcessor from './shaderemove';
 import WordToPdf from './wordtopdf';
+import ExcelToPdf from './exceltopdf';
 
 function App() {
   const [currentSection, setCurrentSection] = useState(0);
@@ -73,16 +74,26 @@ function App() {
                 <PDFProcessor/>
               </div>
             );
-            case 7:
-              return (
-                <div>
-                  <button style={{position: 'absolute',top: '10px',right: '10px',padding: '10px 20px',backgroundColor: '#007BFF',color: 'white',
-                    border: 'none', borderRadius: '5px',cursor: 'pointer',}} onClick={() => setCurrentSection(0)}>
-                    <div>Back</div>
-                  </button>
-                  <WordToPdf/>
-                </div>
-              );
+          case 7:
+            return (
+              <div>
+                <button style={{position: 'absolute',top: '10px',right: '10px',padding: '10px 20px',backgroundColor: '#007BFF',color: 'white',
+                  border: 'none', borderRadius: '5px',cursor: 'pointer',}} onClick={() => setCurrentSection(0)}>
+                  <div>Back</div>
+                </button>
+                <WordToPdf/>
+              </div>
+            );
+          case 8:
+            return (
+              <div>
+                <button style={{position: 'absolute',top: '10px',right: '10px',padding: '10px 20px',backgroundColor: '#007BFF',color: 'white',
+                  border: 'none', borderRadius: '5px',cursor: 'pointer',}} onClick={() => setCurrentSection(0)}>
+                  <div>Back</div>
+                </button>
+                <ExcelToPdf/>
+              </div>
+            );
       default:
         return (
           <div>
@@ -135,6 +146,13 @@ function App() {
                 <p>Convert Word to PDF</p>
                 <button style={styles.button} onClick={() => setCurrentSection(7)}>
                   <div>Go to W2P</div>
+                </button>
+              </div>
+              <div style={styles.card}>
+                <h2>Excel to PDF</h2>
+                <p>Convert Excel to PDF</p>
+                <button style={styles.button} onClick={() => setCurrentSection(8)}>
+                  <div>Go to E2P</div>
                 </button>
               </div>
             </div>
