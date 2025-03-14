@@ -156,21 +156,21 @@ function App() {
                 <h2>Word to PDF</h2>
                 <p>Convert Word to PDF</p>
                 <button style={styles.button} onClick={() => setCurrentSection(7)}>
-                  <div>Go to W2P</div>
+                  <div>Go to Word2PDF</div>
                 </button>
               </div>
               <div style={styles.card}>
                 <h2>Excel to PDF</h2>
                 <p>Convert Excel to PDF</p>
                 <button style={styles.button} onClick={() => setCurrentSection(8)}>
-                  <div>Go to E2P</div>
+                  <div>Go to Xl2PDF</div>
                 </button>
               </div>
               <div style={styles.card}>
                 <h2>Ipynb to PDF</h2>
                 <p>Convert Ipynb to PDF</p>
                 <button style={styles.button} onClick={() => setCurrentSection(9)}>
-                  <div>Go to Ipy2P</div>
+                  <div>Go to Ipy2PDF</div>
                 </button>
               </div>
             </div>
