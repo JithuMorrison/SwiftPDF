@@ -163,14 +163,14 @@ function App() {
                 <h2>Excel to PDF</h2>
                 <p>Convert Excel to PDF</p>
                 <button style={styles.button} onClick={() => setCurrentSection(8)}>
-                  <div>Go to Xl2PDF</div>
+                  <div>Go to Excel2PDF</div>
                 </button>
               </div>
               <div style={styles.card}>
                 <h2>Ipynb to PDF</h2>
                 <p>Convert Ipynb to PDF</p>
                 <button style={styles.button} onClick={() => setCurrentSection(9)}>
-                  <div>Go to Ipy2PDF</div>
+                  <div>Go to Ipynb2PDF</div>
                 </button>
               </div>
             </div>
