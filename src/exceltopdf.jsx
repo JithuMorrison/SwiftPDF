@@ -67,24 +67,32 @@ const ExcelToPdf = () => {
   };
 
   return (
-    <div>
-      <h1>Excel to PDF Converter</h1>
+    <div style={{ backgroundColor: 'white', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '400px' }}>
+      <h1 style={{ fontSize: '24px', fontWeight: '600', textAlign: 'center', color: '#333', marginBottom: '16px' }}>
+        Excel to PDF Converter
+      </h1>
+      <label
+        htmlFor="file-input"
+        style={{ display: 'block', color: '#555', fontWeight: '500', fontSize: '14px', marginBottom: '8px' }}
+      >
+        Upload a .xlsx file
+      </label>
       <input
         id="file-input"
         type="file"
         onChange={handleFileChange}
         accept=".xlsx"
-        aria-describedby="file-input-help"
+        style={{ display: 'block', width: '100%', fontSize: '14px', color: '#666', border: '1px solid #ccc', borderRadius: '8px', padding: '8px', cursor: 'pointer', outline: 'none' }}
       />
-      <small id="file-input-help">Upload a .xlsx file</small>
       <button
         onClick={handleUpload}
         disabled={isConverting || !selectedFile}
         aria-busy={isConverting}
+        style={{ marginTop: '16px', width: '100%', padding: '12px', color: 'white', borderRadius: '8px', border: 'none', cursor: isConverting || !selectedFile ? 'not-allowed' : 'pointer', backgroundColor: isConverting || !selectedFile ? '#bbb' : '#007bff', transition: 'background 0.3s' }}
       >
         {isConverting ? 'Converting...' : 'Convert & Download'}
       </button>
-      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+      {errorMessage && <p style={{ marginTop: '12px', color: 'red', fontSize: '14px' }}>{errorMessage}</p>}
     </div>
   );
 };
