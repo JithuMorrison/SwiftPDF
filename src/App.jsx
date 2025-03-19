@@ -147,7 +147,7 @@ function App() {
               </div>
               <div style={styles.card}>
                 <h2>Shade Remover</h2>
-                <p>Remove shades in pdfs.</p>
+                <p>Remove shades in PDFs.</p>
                 <button style={styles.button} onClick={() => setCurrentSection(6)}>
                   <div>Go to Remover</div>
                 </button>
