@@ -75,7 +75,7 @@ const ExcelToPdf = () => {
         htmlFor="file-input"
         style={{ display: 'block', color: '#555', fontWeight: '500', fontSize: '14px', marginBottom: '8px' }}
       >
-        Upload a .xlsx file - Excel
+        Upload a .xlsx file
       </label>
       <input
         id="file-input"
