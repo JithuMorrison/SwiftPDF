@@ -75,7 +75,7 @@ const WordToPdf = () => {
           htmlFor="file-input"
           style={{ display: 'block', color: '#555', fontWeight: '500', fontSize: '14px', marginBottom: '8px' }}
         >
-          Upload a .docx file
+          Upload a .docx/.doc file
         </label>
         <input
           id="file-input"
