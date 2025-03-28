@@ -155,7 +155,7 @@ const styles = {
     fontSize: '24px',
     fontWeight: 'bold',
     marginBottom: '20px',
-    color: '#333',
+    color: 'white',
   },
   uploadLabel: {
     display: 'block',
@@ -206,8 +206,9 @@ const styles = {
   },
   downloadTitle: {
     fontSize: '18px',
-    color: '#333',
-    marginBottom: '10px',
+    color: 'white',
+    marginBottom: '20px',
+    marginTop: '25px',
   },
   downloadLink: {
     textDecoration: 'none',

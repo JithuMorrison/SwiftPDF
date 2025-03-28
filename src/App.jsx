@@ -187,7 +187,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    marginTop: '50px',
+    marginTop: '-50px',
     fontFamily: 'Arial, sans-serif',
   },
   title: {
@@ -203,7 +203,7 @@ const styles = {
   },
   card: {
     width: '200px',
-    height: '300px',
+    height: '230px',
     border: '1px solid #ccc',
     borderRadius: '8px',
     display: 'flex',
