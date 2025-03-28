@@ -151,7 +151,7 @@ function App() {
                     type="password"
                     value={passwordInput}
                     onChange={(e) => setPasswordInput(e.target.value)}
-                    style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                    style={{ padding: '8px', width: '100%', marginBottom: '10px', marginLeft: '-10px' }}
                   />
                   <div>
                     <button onClick={handlePasswordSubmit} style={{ marginRight: '10px', padding: '8px 16px' }}>
@@ -217,15 +217,15 @@ function App() {
               </div>
               <div style={styles.card}>
                 <h2 style={{color:'white'}}>Excel to PDF</h2>
-                <p>Convert Excel to PDF</p>
-                <button style={styles.button} onClick={() => setCurrentSection(8)}>
+                <p>Excel to PDF conversion made easy</p>
+                <button style={styles.button} onClick={() => handleButtonClick(8)}>
                   <div>Go to Excel2PDF</div>
                 </button>
               </div>
               <div style={styles.card}>
                 <h2 style={{color:'white'}}>Ipynb to PDF</h2>
-                <p>Convert Ipynb to PDF</p>
-                <button style={styles.button} onClick={() => setCurrentSection(9)}>
+                <p>Turn Ipy notebooks into PDF files</p>
+                <button style={styles.button} onClick={() => handleButtonClick(9)}>
                   <div>Go to Ipynb2PDF</div>
                 </button>
               </div>
