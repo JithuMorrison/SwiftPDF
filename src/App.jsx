@@ -111,63 +111,63 @@ function App() {
             <h1 style={styles.title}>PDF Tools</h1>
             <div style={styles.cardContainer}>
               <div style={styles.card}>
-                <h2>Merge PDFs</h2>
+                <h2 style={{color:'white'}}>Merge PDFs</h2>
                 <p>Combine multiple PDFs into one.</p>
                 <button style={styles.button} onClick={() => setCurrentSection(1)}>
                   <div>Go to Merger</div>
                 </button>
               </div>
               <div style={styles.card}>
-                <h2>Split PDFs</h2>
+                <h2 style={{color:'white'}}>Split PDFs</h2>
                 <p>Split a single PDF into multiple parts.</p>
                 <button style={styles.button} onClick={() => setCurrentSection(2)}>
                   <div>Go to Splitter</div>
                 </button>
               </div>
               <div style={styles.card}>
-                <h2>Image from PDFs</h2>
+                <h2 style={{color:'white'}}>Image from PDFs</h2>
                 <p>Convert a page to image from PDF.</p>
                 <button style={styles.button} onClick={() => setCurrentSection(3)}>
                   <div>Go to PDF2Img</div>
                 </button>
               </div>
               <div style={styles.card}>
-                <h2>Image to PDFs</h2>
+                <h2 style={{color:'white'}}>Image to PDFs</h2>
                 <p>Convert images to PDF.</p>
                 <button style={styles.button} onClick={() => setCurrentSection(4)}>
                   <div>Go to Img2PDF</div>
                 </button>
               </div>
               <div style={styles.card}>
-                <h2>Rotate PDFs</h2>
+                <h2 style={{color:'white'}}>Rotate PDFs</h2>
                 <p>Rotate selected pages.</p>
                 <button style={styles.button} onClick={() => setCurrentSection(5)}>
                   <div>Go to RotatePDF</div>
                 </button>
               </div>
               <div style={styles.card}>
-                <h2>Shade Remover</h2>
+                <h2 style={{color:'white'}}>Shade Remover</h2>
                 <p>Remove shades in PDFs.</p>
                 <button style={styles.button} onClick={() => setCurrentSection(6)}>
                   <div>Go to Remover</div>
                 </button>
               </div>
               <div style={styles.card}>
-                <h2>Word to PDF</h2>
+                <h2 style={{color:'white'}}>Word to PDF</h2>
                 <p>Convert Word to PDF</p>
                 <button style={styles.button} onClick={() => setCurrentSection(7)}>
                   <div>Go to Word2PDF</div>
                 </button>
               </div>
               <div style={styles.card}>
-                <h2>Excel to PDF</h2>
+                <h2 style={{color:'white'}}>Excel to PDF</h2>
                 <p>Convert Excel to PDF</p>
                 <button style={styles.button} onClick={() => setCurrentSection(8)}>
                   <div>Go to Excel2PDF</div>
                 </button>
               </div>
               <div style={styles.card}>
-                <h2>Ipynb to PDF</h2>
+                <h2 style={{color:'white'}}>Ipynb to PDF</h2>
                 <p>Convert Ipynb to PDF</p>
                 <button style={styles.button} onClick={() => setCurrentSection(9)}>
                   <div>Go to Ipynb2PDF</div>
