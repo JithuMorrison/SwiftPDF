@@ -9,6 +9,7 @@ import PDFProcessor from './shaderemove';
 import WordToPdf from './wordtopdf';
 import ExcelToPdf from './exceltopdf';
 import IpynbToPdf from './ipynbtopdf';
+import PPTtoPDF from './ppttopdf';
 
 function App() {
   const [currentSection, setCurrentSection] = useState(0);
@@ -125,6 +126,16 @@ function App() {
                 <IpynbToPdf/>
               </div>
             );
+          case 10:
+            return (
+              <div>
+                <button style={{position: 'absolute',top: '10px',right: '10px',padding: '10px 20px',backgroundColor: '#007BFF',color: 'white',
+                  border: 'none', borderRadius: '5px',cursor: 'pointer',}} onClick={() => setCurrentSection(0)}>
+                  <div>Back</div>
+                </button>
+                <PPTtoPDF/>
+              </div>
+            );
       default:
         return (
           <div>
@@ -227,6 +238,13 @@ function App() {
                 <p>Turn Ipy notebooks into PDF files</p>
                 <button style={styles.button} onClick={() => handleButtonClick(9)}>
                   <div>Go to Ipynb2PDF</div>
+                </button>
+              </div>
+              <div style={styles.card}>
+                <h2 style={{color:'white'}}>PPT to PDF</h2>
+                <p>Turn Power Point into PDF files</p>
+                <button style={styles.button} onClick={() => handleButtonClick(10)}>
+                  <div>Go to PPT2PDF</div>
                 </button>
               </div>
             </div>
