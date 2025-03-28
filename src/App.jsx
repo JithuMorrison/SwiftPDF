@@ -133,7 +133,7 @@ function App() {
               </div>
               <div style={styles.card}>
                 <h2 style={{color:'white'}}>Image to PDFs</h2>
-                <p>Convert images to PDF.</p>
+                <p>Convert images into a high-quality PDF document.</p>
                 <button style={styles.button} onClick={() => setCurrentSection(4)}>
                   <div>Go to Img2PDF</div>
                 </button>

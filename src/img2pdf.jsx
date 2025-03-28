@@ -54,7 +54,7 @@ const ImageToPDF = () => {
     <DndProvider backend={HTML5Backend}>
       <div style={styles.mainContainer}>
         <div style={styles.leftPanel}>
-          <h2>Image to PDF Converter</h2>
+          <h2 style={{color: 'white'}}>Image to PDF Converter</h2>
           <label style={styles.uploadLabel}>
             Select Images
             <input
@@ -135,7 +135,7 @@ const DraggableImage = ({ file, index, moveFile }) => {
         alt="Selected"
         style={styles.imagePreview}
       />
-      <span>{file.name}</span>
+      <span style={{color: 'black'}}>{file.name}</span>
     </div>
   );
 };
