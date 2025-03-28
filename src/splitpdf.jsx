@@ -108,7 +108,7 @@ const PDFSplitter = () => {
           </div>
         ))}
       </div>
-      <div style={styles.previewContainer}>
+      <div style={styles.previewContainer(previewUrl)}>
         <h3 style={styles.previewTitle}>PDF Preview</h3>
         {previewUrl ? (
           <object
@@ -143,7 +143,7 @@ const styles = {
     fontSize: '24px',
     fontWeight: 'bold',
     marginBottom: '20px',
-    color: '#333',
+    color: 'white',
   },
   uploadLabel: {
     display: 'block',
@@ -204,15 +204,15 @@ const styles = {
     padding: '10px 20px',
     borderRadius: '5px',
   },
-  previewContainer: {
+  previewContainer: (previewUrl) => ({
     width: '550px',
-    height: '600px',
+    height: previewUrl ? '600px' : '277px',
     border: '1px solid #ddd',
     borderRadius: '10px',
     padding: '10px',
     overflowY: 'auto',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-  },
+  }),
   previewTitle: {
     fontSize: '18px',
     fontWeight: 'bold',
