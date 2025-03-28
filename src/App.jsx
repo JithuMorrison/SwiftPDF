@@ -12,6 +12,26 @@ import IpynbToPdf from './ipynbtopdf';
 
 function App() {
   const [currentSection, setCurrentSection] = useState(0);
+  const [showDialog, setShowDialog] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [targetSection, setTargetSection] = useState(null);
+
+  const correctPassword = 'Jithu'; // change as needed
+
+  const handleButtonClick = (section) => {
+    setTargetSection(section);
+    setShowDialog(true);
+    setPasswordInput('');
+  };
+
+  const handlePasswordSubmit = () => {
+    if (passwordInput === correctPassword) {
+      setCurrentSection(targetSection);
+      setShowDialog(false);
+    } else {
+      alert('Incorrect password!');
+    }
+  };
 
   const renderContent = () => {
     switch (currentSection) {
@@ -108,6 +128,42 @@ function App() {
       default:
         return (
           <div>
+            {showDialog && (
+              <div style={{
+                position: 'fixed',
+                top: 0, left: 0, right: 0, bottom: 0,
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                zIndex: 999,
+              }}>
+                <div style={{
+                  backgroundColor: 'white',
+                  padding: '30px',
+                  borderRadius: '8px',
+                  minWidth: '300px',
+                  textAlign: 'center',
+                  color: 'black',
+                }}>
+                  <h3>Enter Password</h3>
+                  <input
+                    type="password"
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
+                  />
+                  <div>
+                    <button onClick={handlePasswordSubmit} style={{ marginRight: '10px', padding: '8px 16px' }}>
+                      Submit
+                    </button>
+                    <button onClick={() => setShowDialog(false)} style={{ padding: '8px 16px' }}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
             <h1 style={styles.title}>PDF Tools</h1>
             <div style={styles.cardContainer}>
               <div style={styles.card}>
@@ -147,15 +203,15 @@ function App() {
               </div>
               <div style={styles.card}>
                 <h2 style={{color:'white'}}>Shade Remover</h2>
-                <p>Remove shades in PDFs.</p>
+                <p>Remove background shades from PDFs</p>
                 <button style={styles.button} onClick={() => setCurrentSection(6)}>
                   <div>Go to Remover</div>
                 </button>
               </div>
               <div style={styles.card}>
                 <h2 style={{color:'white'}}>Word to PDF</h2>
-                <p>Convert Word to PDF</p>
-                <button style={styles.button} onClick={() => setCurrentSection(7)}>
+                <p>Convert Word documents to PDF</p>
+                <button style={styles.button} onClick={() => handleButtonClick(7)}>
                   <div>Go to Word2PDF</div>
                 </button>
               </div>
