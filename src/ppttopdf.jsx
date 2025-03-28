@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 function PPTtoPDF() {
   const [file, setFile] = useState(null);
-  const [pdfUrl, setPdfUrl] = useState(null);
+  const [pdfBlob, setPdfBlob] = useState(null);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -12,7 +12,7 @@ function PPTtoPDF() {
     if (!file) return;
 
     const formData = new FormData();
-    formData.append('file', file); // Match Flask route expecting 'file'
+    formData.append('file', file);
 
     try {
       const response = await fetch('http://localhost:5000/convert/ppt-to-pdf', {
@@ -23,11 +23,20 @@ function PPTtoPDF() {
       if (!response.ok) throw new Error('Conversion failed');
 
       const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      setPdfUrl(url);
+      setPdfBlob(blob);
     } catch (error) {
       console.error('Conversion failed', error);
     }
+  };
+
+  const handleDownload = () => {
+    if (!pdfBlob) return;
+    const url = URL.createObjectURL(pdfBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = file.name.replace(/\.(pptx?|PPTX?)$/, '.pdf'); // Rename extension
+    a.click();
+    URL.revokeObjectURL(url); // Clean up
   };
 
   return (
@@ -36,10 +45,10 @@ function PPTtoPDF() {
       <input type="file" accept=".ppt,.pptx" onChange={handleFileChange} />
       <button onClick={handleConvert}>Convert</button>
 
-      {pdfUrl && (
+      {pdfBlob && (
         <div>
           <h3>Converted PDF:</h3>
-          <a href={pdfUrl} target="_blank" rel="noopener noreferrer">Download PDF</a>
+          <button onClick={handleDownload}>Download PDF</button>
         </div>
       )}
     </div>
