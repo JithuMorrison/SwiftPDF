@@ -1,58 +1,147 @@
 import React, { useState } from 'react';
 
-function PPTtoPDF() {
-  const [file, setFile] = useState(null);
-  const [pdfBlob, setPdfBlob] = useState(null);
+const PPTtoPDF = () => {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isConverting, setIsConverting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const validTypes = [
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      ];
+      if (!validTypes.includes(file.type)) {
+        alert('Please upload a valid .ppt or .pptx file.');
+        setSelectedFile(null);
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File size must be less than 10 MB.');
+        setSelectedFile(null);
+        return;
+      }
+      setSelectedFile(file);
+      setErrorMessage('');
+    }
   };
 
-  const handleConvert = async () => {
-    if (!file) return;
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      alert('Please select a file first.');
+      return;
+    }
+
+    setIsConverting(true);
+    setErrorMessage('');
 
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('file', selectedFile);
 
     try {
-      const response = await fetch('http://localhost:5000/convert/ppt-to-pdf', {
+      const response = await fetch('https://trauma-chi.vercel.app/convert/ppt-to-pdf', {
         method: 'POST',
         body: formData,
       });
 
-      if (!response.ok) throw new Error('Conversion failed');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Conversion failed');
+      }
 
       const blob = await response.blob();
-      setPdfBlob(blob);
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', selectedFile.name.replace(/\.(pptx?|PPTX?)$/, '.pdf'));
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Conversion failed', error);
+      console.error('Error:', error);
+      setErrorMessage(error.message || 'Conversion failed. Please try again.');
+    } finally {
+      setIsConverting(false);
+      setSelectedFile(null);
+      document.getElementById('ppt-file-input').value = '';
     }
   };
 
-  const handleDownload = () => {
-    if (!pdfBlob) return;
-    const url = URL.createObjectURL(pdfBlob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = file.name.replace(/\.(pptx?|PPTX?)$/, '.pdf'); // Rename extension
-    a.click();
-    URL.revokeObjectURL(url); // Clean up
-  };
-
   return (
-    <div style={{ color: 'white' }}>
-      <h2>Convert PPT to PDF</h2>
-      <input type="file" accept=".ppt,.pptx" onChange={handleFileChange} />
-      <button onClick={handleConvert}>Convert</button>
-
-      {pdfBlob && (
-        <div>
-          <h3>Converted PDF:</h3>
-          <button onClick={handleDownload}>Download PDF</button>
-        </div>
+    <div style={{
+      backgroundColor: 'white',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      borderRadius: '16px',
+      padding: '32px',
+      width: '100%',
+      maxWidth: '400px'
+    }}>
+      <h1 style={{
+        fontSize: '24px',
+        fontWeight: '600',
+        textAlign: 'center',
+        color: '#333',
+        marginBottom: '16px'
+      }}>
+        PPT to PDF Converter
+      </h1>
+      <label
+        htmlFor="ppt-file-input"
+        style={{
+          display: 'block',
+          color: '#555',
+          fontWeight: '500',
+          fontSize: '14px',
+          marginBottom: '8px'
+        }}
+      >
+        Upload a .ppt/.pptx file
+      </label>
+      <input
+        id="ppt-file-input"
+        type="file"
+        onChange={handleFileChange}
+        accept=".ppt,.pptx"
+        style={{
+          display: 'block',
+          width: '100%',
+          fontSize: '14px',
+          color: '#666',
+          border: '1px solid #ccc',
+          borderRadius: '8px',
+          padding: '8px',
+          cursor: 'pointer',
+          outline: 'none'
+        }}
+      />
+      <button
+        onClick={handleUpload}
+        disabled={isConverting || !selectedFile}
+        aria-busy={isConverting}
+        style={{
+          marginTop: '16px',
+          width: '100%',
+          padding: '12px',
+          color: 'white',
+          borderRadius: '8px',
+          border: 'none',
+          cursor: isConverting || !selectedFile ? 'not-allowed' : 'pointer',
+          backgroundColor: isConverting || !selectedFile ? '#bbb' : '#007bff',
+          transition: 'background 0.3s'
+        }}
+      >
+        {isConverting ? 'Converting...' : 'Convert & Download'}
+      </button>
+      {errorMessage && (
+        <p style={{ marginTop: '12px', color: 'red', fontSize: '14px' }}>
+          {errorMessage}
+        </p>
       )}
     </div>
   );
-}
+};
 
 export default PPTtoPDF;
