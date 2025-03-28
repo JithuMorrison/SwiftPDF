@@ -62,9 +62,9 @@ const PdfToImage = () => {
   }, [pdfUrl, pageNum]); // Re-render when PDF URL or pageNum changes
 
   return (
-    <div style={{display: 'flex',alignItems: 'center',justifyContent: 'center',height:'700px'}}>
+    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height:'700px'}}>
       <div style={styles.container}>
-      <h2 style={{ marginBottom: '20px' }}>PDF to Image Converter</h2>
+      <h2 style={{ marginBottom: '20px', color: 'white', marginTop: '0px' }}>PDF to Image Converter</h2>
       <input type="file" accept="application/pdf" onChange={handleFileChange} style={styles.input} />
       {pdfUrl && (
         <div style={styles.pdfInfo}>
@@ -86,7 +86,7 @@ const PdfToImage = () => {
       <canvas ref={canvasRef} style={{ display: 'none' }} />
       {imageSrc ? (
         <div style={styles.imageContainer}>
-          <img src={imageSrc} alt="PDF as Image" style={{ maxWidth: '400px' }} />
+          <img src={imageSrc} alt="PDF as Image" style={{ maxWidth: '340px', padding: '10px' }} />
           <a href={imageSrc} download={`pdf-page-${pageNum}.png`} style={{marginTop: '-70px'}}>
             <button style={styles.downloadButton}>Download Page {pageNum}</button>
           </a>
@@ -147,6 +147,7 @@ const styles = {
     borderRadius: '10px',
     backgroundColor: '#fff',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    overflow: 'hidden',
   },
   downloadButton: {
     padding: '10px 20px',
