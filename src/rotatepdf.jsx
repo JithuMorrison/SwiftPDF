@@ -23,7 +23,6 @@ const PDFRotate = () => {
 
   const handleRotatePdf = async () => {
     if (!pdf|| !rotationPages || direction === null) return;
-    alert('hi');
     const pages = pdf.getPages();
     
     const pageNumbers = rotationPages
@@ -34,7 +33,6 @@ const PDFRotate = () => {
     for (const pageNumber of pageNumbers) {
       const page = pages[pageNumber];
       const currentRotation = page.getRotation().angle;
-      alert(currentRotation);
       const newRotation =
         direction === 'left'
           ? currentRotation - 90
@@ -118,11 +116,20 @@ const styles = {
     fontSize: '24px',
     fontWeight: 'bold',
     marginBottom: '20px',
+    color: 'white',
   },
   uploadLabel: {
     marginBottom: '10px',
     cursor: 'pointer',
-    color: '#007BFF',
+    color: '#FFFFFF', // white text for black background
+    fontWeight: '500',
+    fontSize: '16px',
+    transition: 'all 0.3s ease',
+    textDecoration: 'none',
+    display: 'inline-block',
+    padding: '6px 12px',
+    borderRadius: '6px',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   fileInput: {
     display: 'none',

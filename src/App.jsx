@@ -140,7 +140,7 @@ function App() {
               </div>
               <div style={styles.card}>
                 <h2 style={{color:'white'}}>Rotate PDFs</h2>
-                <p>Rotate selected pages.</p>
+                <p>Rotate selected pages easily.</p>
                 <button style={styles.button} onClick={() => setCurrentSection(5)}>
                   <div>Go to RotatePDF</div>
                 </button>
