@@ -136,170 +136,394 @@ function App() {
                 <PPTtoPDF/>
               </div>
             );
-      default:
-        return (
-          <div>
-            {showDialog && (
-              <div style={{
-                position: 'fixed',
-                top: 0, left: 0, right: 0, bottom: 0,
-                backgroundColor: 'rgba(0,0,0,0.5)',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                zIndex: 999,
-              }}>
-                <div style={{
-                  backgroundColor: 'white',
-                  padding: '30px',
-                  borderRadius: '8px',
-                  minWidth: '300px',
-                  textAlign: 'center',
-                  color: 'black',
-                }}>
-                  <h3>Enter Password</h3>
-                  <input
-                    type="password"
-                    value={passwordInput}
-                    onChange={(e) => setPasswordInput(e.target.value)}
-                    style={{ padding: '8px', width: '100%', marginBottom: '10px', marginLeft: '-10px' }}
-                  />
-                  <div>
-                    <button onClick={handlePasswordSubmit} style={{ marginRight: '10px', padding: '8px 16px' }}>
-                      Submit
-                    </button>
-                    <button onClick={() => setShowDialog(false)} style={{ padding: '8px 16px' }}>
-                      Cancel
-                    </button>
+        default:
+          return (
+            <div style={styles.dashboardContainer}>
+              {showDialog && (
+                <div style={styles.passwordDialogOverlay}>
+                  <div style={styles.passwordDialog}>
+                    <div style={styles.passwordDialogHeader}>
+                      <h3 style={styles.passwordDialogTitle}>Authentication Required</h3>
+                      <p style={styles.passwordDialogSubtitle}>Please enter the password to access this tool</p>
+                    </div>
+                    <input
+                      type="password"
+                      value={passwordInput}
+                      onChange={(e) => setPasswordInput(e.target.value)}
+                      style={styles.passwordInput}
+                      placeholder="Enter password..."
+                      autoFocus
+                    />
+                    <div style={styles.passwordDialogButtons}>
+                      <button 
+                        onClick={handlePasswordSubmit} 
+                        style={styles.passwordDialogPrimaryButton}
+                      >
+                        Continue
+                      </button>
+                      <button 
+                        onClick={() => setShowDialog(false)} 
+                        style={styles.passwordDialogSecondaryButton}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
                 </div>
+              )}
+              
+              <header style={styles.header}>
+                <h1 style={styles.headerTitle}>Swift PDF</h1>
+                <p style={styles.headerSubtitle}>Your complete PDF solution toolkit</p>
+              </header>
+              
+              <div style={styles.toolsGrid}>
+                <div style={styles.toolCard}>
+                  <div style={styles.toolIcon}>📄</div>
+                  <h3 style={styles.toolTitle}>Merge PDFs</h3>
+                  <p style={styles.toolDescription}>Combine multiple PDFs into one</p>
+                  <button 
+                    style={styles.toolButton}
+                    onClick={() => setCurrentSection(1)}
+                  >
+                    Use Tool
+                  </button>
+                </div>
+                
+                <div style={styles.toolCard}>
+                  <div style={styles.toolIcon}>✂️</div>
+                  <h3 style={styles.toolTitle}>Split PDFs</h3>
+                  <p style={styles.toolDescription}>Split a single PDF into multiple parts</p>
+                  <button 
+                    style={styles.toolButton}
+                    onClick={() => setCurrentSection(2)}
+                  >
+                    Use Tool
+                  </button>
+                </div>
+                
+                <div style={styles.toolCard}>
+                  <div style={styles.toolIcon}>🖼️</div>
+                  <h3 style={styles.toolTitle}>Image from PDFs</h3>
+                  <p style={styles.toolDescription}>Convert pages to images from PDF</p>
+                  <button 
+                    style={styles.toolButton}
+                    onClick={() => setCurrentSection(3)}
+                  >
+                    Use Tool
+                  </button>
+                </div>
+                
+                <div style={styles.toolCard}>
+                  <div style={styles.toolIcon}>📷</div>
+                  <h3 style={styles.toolTitle}>Image to PDFs</h3>
+                  <p style={styles.toolDescription}>Convert images into high-quality PDF</p>
+                  <button 
+                    style={styles.toolButton}
+                    onClick={() => setCurrentSection(4)}
+                  >
+                    Use Tool
+                  </button>
+                </div>
+                
+                <div style={styles.toolCard}>
+                  <div style={styles.toolIcon}>🔄</div>
+                  <h3 style={styles.toolTitle}>Rotate PDFs</h3>
+                  <p style={styles.toolDescription}>Rotate selected pages easily</p>
+                  <button 
+                    style={styles.toolButton}
+                    onClick={() => setCurrentSection(5)}
+                  >
+                    Use Tool
+                  </button>
+                </div>
+                
+                <div style={styles.toolCard}>
+                  <div style={styles.toolIcon}>🧹</div>
+                  <h3 style={styles.toolTitle}>Shade Remover</h3>
+                  <p style={styles.toolDescription}>Remove background shades from PDFs</p>
+                  <button 
+                    style={styles.toolButton}
+                    onClick={() => setCurrentSection(6)}
+                  >
+                    Use Tool
+                  </button>
+                </div>
+                
+                <div style={styles.toolCard}>
+                  <div style={styles.toolIcon}>📝</div>
+                  <h3 style={styles.toolTitle}>Word to PDF</h3>
+                  <p style={styles.toolDescription}>Convert Word documents to PDF</p>
+                  <button 
+                    style={styles.protectedToolButton}
+                    onClick={() => handleButtonClick(7)}
+                  >
+                    Use Tool
+                  </button>
+                </div>
+                
+                <div style={styles.toolCard}>
+                  <div style={styles.toolIcon}>📊</div>
+                  <h3 style={styles.toolTitle}>Excel to PDF</h3>
+                  <p style={styles.toolDescription}>Excel to PDF conversion made easy</p>
+                  <button 
+                    style={styles.protectedToolButton}
+                    onClick={() => handleButtonClick(8)}
+                  >
+                    Use Tool
+                  </button>
+                </div>
+                
+                <div style={styles.toolCard}>
+                  <div style={styles.toolIcon}>📓</div>
+                  <h3 style={styles.toolTitle}>Ipynb to PDF</h3>
+                  <p style={styles.toolDescription}>Turn notebooks into PDF files</p>
+                  <button 
+                    style={styles.protectedToolButton}
+                    onClick={() => handleButtonClick(9)}
+                  >
+                    Use Tool
+                  </button>
+                </div>
+                
+                <div style={styles.toolCard}>
+                  <div style={styles.toolIcon}>📑</div>
+                  <h3 style={styles.toolTitle}>PPT to PDF</h3>
+                  <p style={styles.toolDescription}>Turn presentations into PDF files</p>
+                  <button 
+                    style={styles.protectedToolButton}
+                    onClick={() => handleButtonClick(10)}
+                  >
+                    Use Tool
+                  </button>
+                </div>
               </div>
-            )}
-            <h1 style={styles.title}>PDF Tools</h1>
-            <div style={styles.cardContainer}>
-              <div style={styles.card}>
-                <h2 style={{color:'white'}}>Merge PDFs</h2>
-                <p>Combine multiple PDFs into one.</p>
-                <button style={styles.button} onClick={() => setCurrentSection(1)}>
-                  <div>Go to Merger</div>
-                </button>
-              </div>
-              <div style={styles.card}>
-                <h2 style={{color:'white'}}>Split PDFs</h2>
-                <p>Split a single PDF into multiple parts.</p>
-                <button style={styles.button} onClick={() => setCurrentSection(2)}>
-                  <div>Go to Splitter</div>
-                </button>
-              </div>
-              <div style={styles.card}>
-                <h2 style={{color:'white'}}>Image from PDFs</h2>
-                <p>Convert a page to image from PDF.</p>
-                <button style={styles.button} onClick={() => setCurrentSection(3)}>
-                  <div>Go to PDF2Img</div>
-                </button>
-              </div>
-              <div style={styles.card}>
-                <h2 style={{color:'white'}}>Image to PDFs</h2>
-                <p>Convert images into a high-quality PDF document.</p>
-                <button style={styles.button} onClick={() => setCurrentSection(4)}>
-                  <div>Go to Img2PDF</div>
-                </button>
-              </div>
-              <div style={styles.card}>
-                <h2 style={{color:'white'}}>Rotate PDFs</h2>
-                <p>Rotate selected pages easily.</p>
-                <button style={styles.button} onClick={() => setCurrentSection(5)}>
-                  <div>Go to RotatePDF</div>
-                </button>
-              </div>
-              <div style={styles.card}>
-                <h2 style={{color:'white'}}>Shade Remover</h2>
-                <p>Remove background shades from PDFs</p>
-                <button style={styles.button} onClick={() => setCurrentSection(6)}>
-                  <div>Go to Remover</div>
-                </button>
-              </div>
-              <div style={styles.card}>
-                <h2 style={{color:'white'}}>Word to PDF</h2>
-                <p>Convert Word documents to PDF</p>
-                <button style={styles.button} onClick={() => handleButtonClick(7)}>
-                  <div>Go to Word2PDF</div>
-                </button>
-              </div>
-              <div style={styles.card}>
-                <h2 style={{color:'white'}}>Excel to PDF</h2>
-                <p>Excel to PDF conversion made easy</p>
-                <button style={styles.button} onClick={() => handleButtonClick(8)}>
-                  <div>Go to Excel2PDF</div>
-                </button>
-              </div>
-              <div style={styles.card}>
-                <h2 style={{color:'white'}}>Ipynb to PDF</h2>
-                <p>Turn Ipy notebooks into PDF files</p>
-                <button style={styles.button} onClick={() => handleButtonClick(9)}>
-                  <div>Go to Ipynb2PDF</div>
-                </button>
-              </div>
-              <div style={styles.card}>
-                <h2 style={{color:'white'}}>PPT to PDF</h2>
-                <p>Turn Power Point into PDF files</p>
-                <button style={styles.button} onClick={() => handleButtonClick(10)}>
-                  <div>Go to PPT2PDF</div>
-                </button>
-              </div>
+              
+              <footer style={styles.footer}>
+                <p style={styles.footerText}>© {new Date().getFullYear()} Jithu Morrison S</p>
+              </footer>
             </div>
-          </div>
-        );
-    }
+          );
+      }
+    };
+  
+    return <div style={styles.appContainer}>{renderContent()}</div>;
+  }
+  
+  const styles = {
+    appContainer: {
+      minHeight: '97vh',
+      backgroundColor: '#f8fafc',
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+    },
+    dashboardContainer: {
+      maxWidth: '1200px',
+      margin: '0 auto',
+      padding: '20px',
+    },
+    sectionContainer: {
+      maxWidth: '1000px',
+      margin: '0 auto',
+      padding: '40px 20px',
+      position: 'relative',
+    },
+    backButton: {
+      position: 'absolute',
+      top: '20px',
+      left: '20px',
+      backgroundColor: 'transparent',
+      border: 'none',
+      color: '#4f46e5',
+      fontSize: '1rem',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '5px',
+      fontWeight: '500',
+      '&:hover': {
+        textDecoration: 'underline',
+      },
+    },
+    header: {
+      textAlign: 'center',
+      marginBottom: '40px',
+      padding: '40px 0 20px',
+    },
+    headerTitle: {
+      fontSize: '2.5rem',
+      fontWeight: '800',
+      color: '#1e293b',
+      marginBottom: '-10px',
+      background: 'linear-gradient(90deg, #4f46e5, #7c3aed)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      marginTop: '-45px'
+    },
+    headerSubtitle: {
+      fontSize: '1.1rem',
+      color: '#64748b',
+      fontWeight: '400',
+      marginBottom: '-30px'
+    },
+    toolsGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+      gap: '25px',
+      marginBottom: '40px',
+    },
+    toolCard: {
+      backgroundColor: '#ffffff',
+      borderRadius: '12px',
+      padding: '25px',
+      boxShadow: '0 5px 15px rgba(0, 0, 0, 0.05)',
+      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+      border: '1px solid #e2e8f0',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      textAlign: 'center',
+      '&:hover': {
+        transform: 'translateY(-5px)',
+        boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
+      },
+    },
+    toolIcon: {
+      fontSize: '2.5rem',
+      marginBottom: '15px',
+      color: '#4f46e5',
+    },
+    toolTitle: {
+      fontSize: '1.3rem',
+      fontWeight: '600',
+      marginBottom: '10px',
+      color: '#1e293b',
+    },
+    toolDescription: {
+      fontSize: '0.95rem',
+      color: '#64748b',
+      marginBottom: '20px',
+      flexGrow: 1,
+    },
+    toolButton: {
+      backgroundColor: '#4f46e5',
+      color: 'white',
+      border: 'none',
+      padding: '12px 25px',
+      borderRadius: '8px',
+      cursor: 'pointer',
+      fontSize: '0.95rem',
+      fontWeight: '500',
+      transition: 'background-color 0.3s ease',
+      width: '100%',
+      maxWidth: '200px',
+      '&:hover': {
+        backgroundColor: '#4338ca',
+      },
+    },
+    protectedToolButton: {
+      backgroundColor: '#10b981',
+      color: 'white',
+      border: 'none',
+      padding: '12px 25px',
+      borderRadius: '8px',
+      cursor: 'pointer',
+      fontSize: '0.95rem',
+      fontWeight: '500',
+      transition: 'background-color 0.3s ease',
+      width: '100%',
+      maxWidth: '200px',
+      '&:hover': {
+        backgroundColor: '#059669',
+      },
+    },
+    footer: {
+      textAlign: 'center',
+      padding: '20px',
+      marginTop: '40px',
+      borderTop: '1px solid #e2e8f0',
+      color: '#64748b',
+      fontSize: '0.9rem',
+    },
+    passwordDialogOverlay: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1000,
+    },
+    passwordDialog: {
+      backgroundColor: 'white',
+      padding: '30px',
+      borderRadius: '12px',
+      width: '100%',
+      maxWidth: '400px',
+      boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+    },
+    passwordDialogHeader: {
+      marginBottom: '20px',
+      textAlign: 'center',
+    },
+    passwordDialogTitle: {
+      fontSize: '1.5rem',
+      fontWeight: '600',
+      color: '#1e293b',
+      marginBottom: '5px',
+    },
+    passwordDialogSubtitle: {
+      fontSize: '0.9rem',
+      color: '#64748b',
+    },
+    passwordInput: {
+      width: '100%',
+      padding: '12px 15px',
+      marginBottom: '20px',
+      border: '1px solid #e2e8f0',
+      borderRadius: '8px',
+      fontSize: '1rem',
+      '&:focus': {
+        outline: 'none',
+        borderColor: '#4f46e5',
+        boxShadow: '0 0 0 3px rgba(79, 70, 229, 0.2)',
+      },
+    },
+    passwordDialogButtons: {
+      display: 'flex',
+      justifyContent: 'center',
+      gap: '15px',
+    },
+    passwordDialogPrimaryButton: {
+      backgroundColor: '#4f46e5',
+      color: 'white',
+      border: 'none',
+      padding: '10px 20px',
+      borderRadius: '8px',
+      cursor: 'pointer',
+      fontSize: '1rem',
+      fontWeight: '500',
+      transition: 'background-color 0.3s ease',
+      '&:hover': {
+        backgroundColor: '#4338ca',
+      },
+    },
+    passwordDialogSecondaryButton: {
+      backgroundColor: '#e2e8f0',
+      color: '#1e293b',
+      border: 'none',
+      padding: '10px 20px',
+      borderRadius: '8px',
+      cursor: 'pointer',
+      fontSize: '1rem',
+      fontWeight: '500',
+      transition: 'background-color 0.3s ease',
+      '&:hover': {
+        backgroundColor: '#cbd5e1',
+      },
+    },
   };
-
-  return <div style={styles.container}>{renderContent()}</div>;
-}
-
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginTop: '-50px',
-    fontFamily: 'Arial, sans-serif',
-  },
-  title: {
-    fontSize: '32px',
-    fontWeight: 'bold',
-    marginBottom: '40px',
-  },
-  cardContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '20px',
-    flexWrap: 'wrap',
-  },
-  card: {
-    width: '200px',
-    height: '230px',
-    border: '1px solid #ccc',
-    borderRadius: '8px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '10px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    cursor: 'pointer',
-  },
-  button: {
-    padding: '10px 20px',
-    backgroundColor: '#007BFF',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    marginTop: '10px',
-  },
-  buttonText: {
-    textDecoration: 'none',
-    color: 'white',
-  },
-};
-
-export default App;
+  
+  export default App;
