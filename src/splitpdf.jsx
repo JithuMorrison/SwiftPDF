@@ -254,9 +254,6 @@ const styles = {
   contentContainer: {
     display: 'flex',
     gap: '30px',
-    '@media (max-width: 768px)': {
-      flexDirection: 'column'
-    }
   },
   controlPanel: {
     flex: '1',

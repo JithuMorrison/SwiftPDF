@@ -479,7 +479,7 @@ function App() {
       color: '#64748b',
     },
     passwordInput: {
-      width: '100%',
+      width: '90%',
       padding: '12px 15px',
       marginBottom: '20px',
       border: '1px solid #e2e8f0',
