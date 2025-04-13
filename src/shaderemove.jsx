@@ -9,28 +9,35 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "/SwiftPDF/pdf.worker.min.mjs";
 export default function PDFProcessor() {
   const [processedPdf, setProcessedPdf] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [contrast,setContrast] = useState(140);
+  const [contrast, setContrast] = useState(140);
+  const [fileName, setFileName] = useState("");
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
-    if (file && contrast >= 0 && contrast < 256) {
-      setLoading(true);
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const pdfBytes = new Uint8Array(e.target.result);
-        const processedBytes = await processPDF(pdfBytes);
-        setProcessedPdf(URL.createObjectURL(new Blob([processedBytes], { type: "application/pdf" })));
-        setLoading(false);
-      };
-      reader.readAsArrayBuffer(file);
-    }
-    else{
-        alert("Check contrast");
+    if (file) {
+      setFileName(file.name);
+      if (contrast >= 0 && contrast < 256) {
+        setLoading(true);
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const pdfBytes = new Uint8Array(e.target.result);
+          const processedBytes = await processPDF(pdfBytes);
+          setProcessedPdf(
+            URL.createObjectURL(
+              new Blob([processedBytes], { type: "application/pdf" })
+            )
+          );
+          setLoading(false);
+        };
+        reader.readAsArrayBuffer(file);
+      } else {
+        alert("Contrast value must be between 0 and 255");
+      }
     }
   };
 
   const handleContrastChange = (event) => {
-    setContrast(event.target.value);
+    setContrast(Number(event.target.value));
   };
 
   const processPDF = async (pdfBytes) => {
@@ -69,41 +76,171 @@ export default function PDFProcessor() {
       const imgUrl = canvas.toDataURL("image/png");
       const img = await newPdf.embedPng(imgUrl);
       const newPage = newPdf.addPage([viewport.width, viewport.height]);
-      newPage.drawImage(img, { x: 0, y: 0, width: viewport.width, height: viewport.height });
+      newPage.drawImage(img, {
+        x: 0,
+        y: 0,
+        width: viewport.width,
+        height: viewport.height,
+      });
     }
 
     return newPdf.save();
   };
 
-  const inputStyle = {
-    display: "block",
-    width: "fit-content",
-    margin: "15px auto 10px",
-    padding: "8px",
-    fontSize: "16px",
-    borderRadius: "4px",
-    marginBottom: "10px",
-    outline: "none",
-    transition: "border-color 0.3s",
-  };
-
   return (
-    <div className="container">
-      <div className="card">
-        <h2>PDF Shader Removal</h2>
-        <input id="contrast-input" type="number" value={contrast} onChange={handleContrastChange} min="0" max="300" step="10" style={inputStyle} onFocus={(e) => (e.target.style.borderColor = inputFocusStyle.borderColor)} onBlur={(e) => (e.target.style.borderColor = "#28a745")}/>
-        <label htmlFor="pdf-upload" className="upload-btn">
-          Upload PDF
-          <input id="pdf-upload" type="file" accept="application/pdf" onChange={handleFileChange} />
-        </label>
+    <div className="main-container">
+      <header className="header">
+        <h1 className="header-title">PDF Shader Removal</h1>
+        <p className="header-subtitle">
+          Upload a PDF to remove shadings and enhance contrast
+        </p>
+      </header>
 
-        {loading && <p className="loading">Processing PDF...</p>}
+      <div className="content-wrapper">
+        <div className="controls-column">
+          <div className="upload-container">
+            <div className="upload-content">
+              <svg
+                className="upload-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                />
+              </svg>
+              {fileName ? (
+                <p className="upload-text">{fileName}</p>
+              ) : (
+                <p className="upload-text">Drag & drop your PDF here</p>
+              )}
+              <label className="upload-button">
+                Browse Files
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  onChange={handleFileChange}
+                  className="file-input"
+                />
+              </label>
+              <p className="file-type-hint">PDF files only</p>
+            </div>
+          </div>
 
-        {processedPdf && (
-          <a href={processedPdf} download="processed.pdf" className="download-btn">
-            Download Processed PDF
-          </a>
-        )}
+          <div className="settings-container">
+            <div className="input-group">
+              <label className="input-label">Contrast Threshold</label>
+              <input
+                type="range"
+                min="0"
+                max="255"
+                value={contrast}
+                onChange={handleContrastChange}
+                className="text-input"
+              />
+              <div className="input-value">{contrast}</div>
+            </div>
+
+            <button
+              className="apply-button"
+              disabled={!fileName || loading}
+              onClick={() => document.querySelector(".file-input").click()}
+            >
+              {loading ? (
+                <span className="button-loading">
+                  <span className="spinner"></span>
+                  Processing...
+                </span>
+              ) : (
+                "Process PDF"
+              )}
+            </button>
+          </div>
+
+          {processedPdf && (
+            <div className="result-container">
+              <svg
+                className="success-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <h3 className="result-title">Processing Complete!</h3>
+              <a
+                href={processedPdf}
+                download="processed.pdf"
+                className="download-button"
+              >
+                Download Processed PDF
+              </a>
+            </div>
+          )}
+        </div>
+
+        <div className="preview-column">
+          <div className="preview-container">
+            <div className="preview-header">
+              <svg
+                className="preview-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                />
+              </svg>
+              <h3 className="preview-title">PDF Preview</h3>
+            </div>
+            <div className="preview-content">
+              {processedPdf ? (
+                <iframe
+                  src={processedPdf}
+                  className="pdf-viewer"
+                  title="PDF Preview"
+                ></iframe>
+              ) : (
+                <div className="empty-preview">
+                  <svg
+                    className="empty-icon"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1}
+                      d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                    />
+                  </svg>
+                  <p className="empty-text">No PDF to preview</p>
+                  <p className="empty-hint">
+                    Upload a PDF file to see the preview here
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
