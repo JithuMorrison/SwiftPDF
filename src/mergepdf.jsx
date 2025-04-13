@@ -8,6 +8,7 @@ const PDFMerger = () => {
   const [mergedPdfUrl, setMergedPdfUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   const mergePDFs = async () => {
     if (pdfFiles.length === 0) return;
@@ -26,7 +27,9 @@ const PDFMerger = () => {
 
       const mergedPdfBytes = await mergedPdf.save();
       const mergedPdfBlob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
-      setMergedPdfUrl(URL.createObjectURL(mergedPdfBlob));
+      const url = URL.createObjectURL(mergedPdfBlob);
+      setMergedPdfUrl(url);
+      setPreviewUrl(url);
     } catch (error) {
       console.error("Error merging PDFs:", error);
     } finally {
@@ -34,9 +37,13 @@ const PDFMerger = () => {
     }
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const selectedFiles = Array.from(event.target.files);
-    setPdfFiles(selectedFiles);
+    if (selectedFiles.length > 0) {
+      setPdfFiles(selectedFiles);
+      const fileUrl = URL.createObjectURL(selectedFiles[0]);
+      setPreviewUrl(fileUrl);
+    }
   };
 
   const handleDragOver = (e) => {
@@ -48,12 +55,14 @@ const PDFMerger = () => {
     setIsDragging(false);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = async (e) => {
     e.preventDefault();
     setIsDragging(false);
     const files = Array.from(e.dataTransfer.files).filter(file => file.type === 'application/pdf');
-    if (files.length) {
+    if (files.length > 0) {
       setPdfFiles(files);
+      const fileUrl = URL.createObjectURL(files[0]);
+      setPreviewUrl(fileUrl);
     }
   };
 
@@ -69,7 +78,12 @@ const PDFMerger = () => {
   };
 
   const removeFile = (index) => {
-    setPdfFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
+    const newFiles = pdfFiles.filter((_, i) => i !== index);
+    setPdfFiles(newFiles);
+    if (newFiles.length > 0 && index === 0) {
+      const fileUrl = URL.createObjectURL(newFiles[0]);
+      setPreviewUrl(fileUrl);
+    }
   };
 
   return (
@@ -80,102 +94,135 @@ const PDFMerger = () => {
           <p style={styles.headerSubtitle}>Combine multiple PDF files into one document</p>
         </div>
 
-        <div style={styles.contentContainer}>
-          <div 
-            style={{
-              ...styles.uploadContainer,
-              borderColor: isDragging ? '#4CAF50' : '#e0e0e0',
-              backgroundColor: isDragging ? '#f5fff5' : '#ffffff'
-            }}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-          >
-            <div style={styles.uploadContent}>
-              <svg style={styles.uploadIcon} viewBox="0 0 24 24">
-                <path fill="currentColor" d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-                <path fill="currentColor" d="M8,15V17H16V15H8M8,11V13H16V11H8M8,7V9H16V7H8Z" />
-              </svg>
-              <p style={styles.uploadText}>Drag & drop PDF files here or</p>
-              <label style={styles.uploadButton}>
-                Browse Files
-                <input 
-                  type="file" 
-                  multiple 
-                  accept="application/pdf" 
-                  onChange={handleFileChange} 
-                  style={styles.fileInput} 
-                />
-              </label>
-              <p style={styles.fileTypeHint}>Only PDF files are accepted</p>
+        <div style={styles.contentWrapper}>
+          <div style={styles.controlsColumn}>
+            <div 
+              style={{
+                ...styles.uploadContainer,
+                borderColor: isDragging ? '#4f46e5' : '#e0e0e0',
+                backgroundColor: isDragging ? '#f5f3ff' : '#ffffff'
+              }}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <div style={styles.uploadContent}>
+                <svg style={styles.uploadIcon} viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                  <path fill="currentColor" d="M8,15V17H16V15H8M8,11V13H16V11H8M8,7V9H16V7H8Z" />
+                </svg>
+                <p style={styles.uploadText}>Drag & drop PDF files here or</p>
+                <label style={styles.uploadButton}>
+                  Browse Files
+                  <input 
+                    type="file" 
+                    multiple 
+                    accept="application/pdf" 
+                    onChange={handleFileChange} 
+                    style={styles.fileInput} 
+                  />
+                </label>
+                <p style={styles.fileTypeHint}>Only PDF files are accepted</p>
+              </div>
             </div>
-          </div>
 
-          {pdfFiles.length > 0 && (
-            <div style={styles.filesContainer}>
-              <div style={styles.filesHeader}>
-                <h3 style={styles.filesTitle}>Selected Files ({pdfFiles.length})</h3>
-                <div style={styles.actionButtons}>
-                  <button 
-                    onClick={reverseFiles} 
-                    style={styles.secondaryButton}
-                    disabled={pdfFiles.length < 2}
-                  >
-                    Reverse Order
-                  </button>
-                  <button 
-                    onClick={mergePDFs} 
-                    style={styles.primaryButton}
-                    disabled={pdfFiles.length < 2 || isLoading}
-                  >
-                    {isLoading ? (
-                      <span style={styles.buttonLoading}>
-                        <span style={styles.spinner}></span>
-                        Merging...
-                      </span>
-                    ) : 'Merge PDFs'}
-                  </button>
+            {pdfFiles.length > 0 && (
+              <div style={styles.filesContainer}>
+                <div style={styles.filesHeader}>
+                  <h3 style={styles.filesTitle}>Selected Files ({pdfFiles.length})</h3>
+                  <div style={styles.actionButtons}>
+                    <button 
+                      onClick={reverseFiles} 
+                      style={styles.secondaryButton}
+                      disabled={pdfFiles.length < 2}
+                    >
+                      Reverse Order
+                    </button>
+                    <button 
+                      onClick={mergePDFs} 
+                      style={styles.primaryButton}
+                      disabled={pdfFiles.length < 2 || isLoading}
+                    >
+                      {isLoading ? (
+                        <span style={styles.buttonLoading}>
+                          <span style={styles.spinner}></span>
+                          Merging...
+                        </span>
+                      ) : 'Merge PDFs'}
+                    </button>
+                  </div>
+                </div>
+
+                <div style={styles.fileList}>
+                  {pdfFiles.map((file, index) => (
+                    <FileItem 
+                      key={`${file.name}-${index}`} 
+                      file={file} 
+                      index={index} 
+                      moveFile={moveFile} 
+                      removeFile={removeFile}
+                      setPreview={() => {
+                        const fileUrl = URL.createObjectURL(file);
+                        setPreviewUrl(fileUrl);
+                      }}
+                    />
+                  ))}
                 </div>
               </div>
+            )}
+          </div>
 
-              <div style={styles.fileList}>
-                {pdfFiles.map((file, index) => (
-                  <FileItem 
-                    key={`${file.name}-${index}`} 
-                    file={file} 
-                    index={index} 
-                    moveFile={moveFile} 
-                    removeFile={removeFile}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {mergedPdfUrl && (
-            <div style={styles.resultContainer}>
-              <div style={styles.resultCard}>
-                <svg style={styles.successIcon} viewBox="0 0 24 24">
-                  <path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" />
+          <div style={styles.previewColumn}>
+            <div style={styles.previewContainer}>
+              <div style={styles.previewHeader}>
+                <svg style={styles.previewIcon} viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z" />
                 </svg>
-                <h3 style={styles.resultTitle}>PDFs Merged Successfully!</h3>
-                <a 
-                  href={mergedPdfUrl} 
-                  download="merged-document.pdf" 
-                  style={styles.downloadButton}
-                >
-                  Download Merged PDF
-                </a>
+                <h3 style={styles.previewTitle}>PDF Preview</h3>
+                {mergedPdfUrl && (
+                  <a 
+                    href={mergedPdfUrl} 
+                    download="merged-document.pdf" 
+                    style={styles.downloadButton}
+                  >
+                    Download
+                  </a>
+                )}
+              </div>
+              
+              <div style={styles.previewContent}>
+                {previewUrl ? (
+                  <object
+                    data={previewUrl}
+                    type="application/pdf"
+                    width="100%"
+                    height="100%"
+                    style={styles.pdfViewer}
+                  >
+                    <p style={styles.pdfFallback}>
+                      Your browser doesn't support PDF preview. 
+                      <a href={previewUrl} style={styles.pdfFallbackLink}>Download the PDF</a> instead.
+                    </p>
+                  </object>
+                ) : (
+                  <div style={styles.emptyPreview}>
+                    <svg style={styles.emptyIcon} viewBox="0 0 24 24">
+                      <path fill="currentColor" d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                    </svg>
+                    <p style={styles.emptyText}>No PDF selected</p>
+                    <p style={styles.emptyHint}>Upload a PDF to preview it here</p>
+                  </div>
+                )}
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </DndProvider>
   );
 };
 
-const FileItem = ({ file, index, moveFile, removeFile }) => {
+const FileItem = ({ file, index, moveFile, removeFile, setPreview }) => {
   const ref = React.useRef(null);
 
   const [, drop] = useDrop({
@@ -207,8 +254,10 @@ const FileItem = ({ file, index, moveFile, removeFile }) => {
         ...styles.fileItem,
         opacity: isDragging ? 0.5 : 1,
         transform: isDragging ? 'scale(1.02)' : 'scale(1)',
-        boxShadow: isDragging ? '0 4px 12px rgba(0,0,0,0.15)' : 'none'
+        boxShadow: isDragging ? '0 4px 12px rgba(0,0,0,0.15)' : 'none',
+        cursor: 'pointer'
       }}
+      onClick={setPreview}
     >
       <div style={styles.fileInfo}>
         <svg style={styles.fileIcon} viewBox="0 0 24 24">
@@ -222,7 +271,10 @@ const FileItem = ({ file, index, moveFile, removeFile }) => {
       <div style={styles.fileActions}>
         <span style={styles.fileIndex}>{index + 1}</span>
         <button 
-          onClick={() => removeFile(index)}
+          onClick={(e) => {
+            e.stopPropagation();
+            removeFile(index);
+          }}
           style={styles.removeButton}
           aria-label="Remove file"
         >
@@ -237,7 +289,7 @@ const FileItem = ({ file, index, moveFile, removeFile }) => {
 
 const styles = {
   mainContainer: {
-    maxWidth: '1000px',
+    maxWidth: '1400px',
     margin: '0 auto',
     padding: '30px 20px',
     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
@@ -252,19 +304,34 @@ const styles = {
     fontWeight: '700',
     color: '#2c3e50',
     marginBottom: '10px',
-    background: 'linear-gradient(90deg, #4CAF50, #2E7D32)',
+    background: 'linear-gradient(90deg, #4f46e5, #7c3aed)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent'
   },
   headerSubtitle: {
     fontSize: '1.1rem',
-    color: '#666',
+    color: '#64748b',
     fontWeight: '400'
   },
-  contentContainer: {
+  contentWrapper: {
+    display: 'flex',
+    gap: '30px',
+    '@media (max-width: 1024px)': {
+      flexDirection: 'column'
+    }
+  },
+  controlsColumn: {
+    flex: '1',
+    minWidth: '0',
     display: 'flex',
     flexDirection: 'column',
-    gap: '30px'
+    gap: '25px'
+  },
+  previewColumn: {
+    width: '500px',
+    '@media (maxWidth: 1024px)': {
+      width: '100%'
+    }
   },
   uploadContainer: {
     border: '2px dashed #e0e0e0',
@@ -283,7 +350,7 @@ const styles = {
   uploadIcon: {
     width: '60px',
     height: '60px',
-    color: '#4CAF50',
+    color: '#4f46e5',
     marginBottom: '10px'
   },
   uploadText: {
@@ -294,7 +361,7 @@ const styles = {
   uploadButton: {
     display: 'inline-block',
     padding: '12px 24px',
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#4f46e5',
     color: 'white',
     borderRadius: '6px',
     fontWeight: '500',
@@ -303,7 +370,7 @@ const styles = {
     transition: 'background-color 0.2s',
     border: 'none',
     '&:hover': {
-      backgroundColor: '#3e8e41'
+      backgroundColor: '#4338ca'
     }
   },
   fileInput: {
@@ -315,10 +382,14 @@ const styles = {
     margin: '0'
   },
   filesContainer: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#ffffff',
     borderRadius: '12px',
     padding: '25px',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.05)'
+    boxShadow: '0 5px 15px rgba(0,0,0,0.05)',
+    border: '1px solid #e2e8f0',
+    flex: '1',
+    display: 'flex',
+    flexDirection: 'column'
   },
   filesHeader: {
     display: 'flex',
@@ -331,7 +402,7 @@ const styles = {
   filesTitle: {
     fontSize: '1.3rem',
     fontWeight: '600',
-    color: '#333',
+    color: '#1e293b',
     margin: '0'
   },
   actionButtons: {
@@ -339,43 +410,43 @@ const styles = {
     gap: '15px'
   },
   primaryButton: {
-    padding: '10px 20px',
-    backgroundColor: '#4CAF50',
+    padding: '12px 24px',
+    backgroundColor: '#4f46e5',
     color: 'white',
-    border: 'none',
-    borderRadius: '6px',
+    borderRadius: '8px',
     fontWeight: '500',
-    fontSize: '0.95rem',
+    fontSize: '1rem',
     cursor: 'pointer',
     transition: 'all 0.2s',
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
+    border: 'none',
     '&:disabled': {
-      backgroundColor: '#a5d6a7',
+      backgroundColor: '#c7d2fe',
       cursor: 'not-allowed'
     },
     '&:hover:not(:disabled)': {
-      backgroundColor: '#3e8e41'
+      backgroundColor: '#4338ca'
     }
   },
   secondaryButton: {
-    padding: '10px 20px',
+    padding: '12px 24px',
     backgroundColor: 'transparent',
-    color: '#4CAF50',
-    border: '1px solid #4CAF50',
-    borderRadius: '6px',
+    color: '#4f46e5',
+    border: '1px solid #4f46e5',
+    borderRadius: '8px',
     fontWeight: '500',
-    fontSize: '0.95rem',
+    fontSize: '1rem',
     cursor: 'pointer',
     transition: 'all 0.2s',
     '&:disabled': {
-      color: '#a5d6a7',
-      borderColor: '#a5d6a7',
+      color: '#c7d2fe',
+      borderColor: '#c7d2fe',
       cursor: 'not-allowed'
     },
     '&:hover:not(:disabled)': {
-      backgroundColor: '#f1f8f1'
+      backgroundColor: '#f5f3ff'
     }
   },
   buttonLoading: {
@@ -398,41 +469,49 @@ const styles = {
   fileList: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '10px'
+    gap: '10px',
+    flex: '1',
+    overflowY: 'auto',
+    maxHeight: '500px',
+    paddingRight: '10px'
   },
   fileItem: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
     borderRadius: '8px',
     padding: '15px',
     transition: 'all 0.2s ease',
-    border: '1px solid #e0e0e0'
+    border: '1px solid #e2e8f0',
+    '&:hover': {
+      backgroundColor: '#f8fafc'
+    }
   },
   fileInfo: {
     display: 'flex',
     alignItems: 'center',
     gap: '15px',
-    flex: '1'
+    flex: '1',
+    minWidth: '0'
   },
   fileIcon: {
     width: '24px',
     height: '24px',
-    color: '#e53935'
+    color: '#4f46e5',
+    flexShrink: '0'
   },
   fileName: {
     fontWeight: '500',
     margin: '0',
-    color: '#333',
+    color: '#1e293b',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    maxWidth: '400px'
+    textOverflow: 'ellipsis'
   },
   fileSize: {
     fontSize: '0.8rem',
-    color: '#888',
+    color: '#64748b',
     margin: '3px 0 0 0'
   },
   fileActions: {
@@ -441,8 +520,8 @@ const styles = {
     gap: '15px'
   },
   fileIndex: {
-    backgroundColor: '#e8f5e9',
-    color: '#4CAF50',
+    backgroundColor: '#e0e7ff',
+    color: '#4f46e5',
     width: '28px',
     height: '28px',
     borderRadius: '50%',
@@ -450,7 +529,8 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '0.9rem',
-    fontWeight: '600'
+    fontWeight: '600',
+    flexShrink: '0'
   },
   removeButton: {
     background: 'none',
@@ -459,52 +539,109 @@ const styles = {
     padding: '5px',
     borderRadius: '4px',
     transition: 'background-color 0.2s',
+    flexShrink: '0',
     '&:hover': {
-      backgroundColor: '#ffebee'
+      backgroundColor: '#fee2e2'
     }
   },
   removeIcon: {
     width: '20px',
     height: '20px',
-    color: '#e53935'
+    color: '#ef4444'
   },
-  resultContainer: {
-    textAlign: 'center'
-  },
-  resultCard: {
-    backgroundColor: '#e8f5e9',
+  previewContainer: {
+    backgroundColor: '#ffffff',
     borderRadius: '12px',
-    padding: '30px',
-    display: 'inline-flex',
-    flexDirection: 'column',
+    boxShadow: '0 5px 15px rgba(0,0,0,0.05)',
+    border: '1px solid #e2e8f0',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  previewHeader: {
+    display: 'flex',
     alignItems: 'center',
-    gap: '20px'
+    gap: '15px',
+    padding: '20px',
+    borderBottom: '1px solid #e2e8f0'
   },
-  successIcon: {
-    width: '50px',
-    height: '50px',
-    color: '#4CAF50'
+  previewIcon: {
+    width: '28px',
+    height: '28px',
+    color: '#4f46e5'
   },
-  resultTitle: {
-    fontSize: '1.3rem',
+  previewTitle: {
+    fontSize: '1.25rem',
     fontWeight: '600',
-    color: '#2E7D32',
-    margin: '0'
+    color: '#1e293b',
+    margin: '0',
+    flex: '1'
   },
   downloadButton: {
-    padding: '12px 24px',
-    backgroundColor: '#4CAF50',
+    padding: '8px 16px',
+    backgroundColor: '#4f46e5',
     color: 'white',
     borderRadius: '6px',
     fontWeight: '500',
-    fontSize: '1rem',
+    fontSize: '0.9rem',
     cursor: 'pointer',
     transition: 'background-color 0.2s',
+    border: 'none',
     textDecoration: 'none',
-    display: 'inline-block',
     '&:hover': {
-      backgroundColor: '#3e8e41'
+      backgroundColor: '#4338ca'
     }
+  },
+  previewContent: {
+    flex: '1',
+    padding: '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '500px'
+  },
+  pdfViewer: {
+    width: '100%',
+    height: '100%',
+    border: 'none',
+    borderRadius: '8px'
+  },
+  pdfFallback: {
+    textAlign: 'center',
+    color: '#64748b'
+  },
+  pdfFallbackLink: {
+    color: '#4f46e5',
+    textDecoration: 'none',
+    fontWeight: '500',
+    '&:hover': {
+      textDecoration: 'underline'
+    }
+  },
+  emptyPreview: {
+    textAlign: 'center',
+    color: '#64748b',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '10px'
+  },
+  emptyIcon: {
+    width: '60px',
+    height: '60px',
+    color: '#cbd5e1',
+    marginBottom: '10px'
+  },
+  emptyText: {
+    fontSize: '1.1rem',
+    fontWeight: '500',
+    color: '#475569',
+    margin: '0'
+  },
+  emptyHint: {
+    fontSize: '0.9rem',
+    margin: '0'
   }
 };
 
