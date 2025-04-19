@@ -40,7 +40,7 @@ const PDFMerger = () => {
   const handleFileChange = async (event) => {
     const selectedFiles = Array.from(event.target.files);
     if (selectedFiles.length > 0) {
-      setPdfFiles(selectedFiles);
+      setPdfFiles(prevFiles => [...prevFiles, ...selectedFiles]);
       const fileUrl = URL.createObjectURL(selectedFiles[0]);
       setPreviewUrl(fileUrl);
     }
@@ -60,10 +60,16 @@ const PDFMerger = () => {
     setIsDragging(false);
     const files = Array.from(e.dataTransfer.files).filter(file => file.type === 'application/pdf');
     if (files.length > 0) {
-      setPdfFiles(files);
+      setPdfFiles(prevFiles => [...prevFiles, ...files]);
       const fileUrl = URL.createObjectURL(files[0]);
       setPreviewUrl(fileUrl);
     }
+  };
+
+  const clearAllFiles = () => {
+    setPdfFiles([]);
+    setMergedPdfUrl(null);
+    setPreviewUrl(null);
   };
 
   const moveFile = (dragIndex, hoverIndex) => {
@@ -131,6 +137,12 @@ const PDFMerger = () => {
                 <div style={styles.filesHeader}>
                   <h3 style={styles.filesTitle}>Selected Files ({pdfFiles.length})</h3>
                   <div style={styles.actionButtons}>
+                    <button 
+                      onClick={clearAllFiles} 
+                      style={styles.secondaryButton}
+                    >
+                      Clear All
+                    </button>
                     <button 
                       onClick={reverseFiles} 
                       style={styles.secondaryButton}
