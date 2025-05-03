@@ -10,6 +10,7 @@ import WordToPdf from './wordtopdf';
 import ExcelToPdf from './exceltopdf';
 import IpynbToPdf from './ipynbtopdf';
 import PPTtoPDF from './ppttopdf';
+import PdfOCRSearchWithPdfLib from './searchimgpdf';
 
 function App() {
   const [currentSection, setCurrentSection] = useState(0);
@@ -134,6 +135,16 @@ function App() {
                   <div>Back</div>
                 </button>
                 <PPTtoPDF/>
+              </div>
+            );
+          case 11:
+            return (
+              <div>
+                <button style={{position: 'absolute',top: '10px',right: '10px',padding: '10px 20px',backgroundColor: '#007BFF',color: 'white',
+                  border: 'none', borderRadius: '5px',cursor: 'pointer',}} onClick={() => setCurrentSection(0)}>
+                  <div>Back</div>
+                </button>
+                <PdfOCRSearchWithPdfLib/>
               </div>
             );
         default:
@@ -293,6 +304,18 @@ function App() {
                   <button 
                     style={styles.protectedToolButton}
                     onClick={() => handleButtonClick(10)}
+                  >
+                    Use Tool
+                  </button>
+                </div>
+
+                <div style={styles.toolCard}>
+                  <div style={styles.toolIcon}>📑</div>
+                  <h3 style={styles.toolTitle}>PPT to PDF</h3>
+                  <p style={styles.toolDescription}>Turn presentations into PDF files</p>
+                  <button 
+                    style={styles.protectedToolButton}
+                    onClick={() => handleButtonClick(11)}
                   >
                     Use Tool
                   </button>
