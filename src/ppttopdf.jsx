@@ -47,10 +47,17 @@ const PPTtoPDF = () => {
     formData.append('file', selectedFile);
 
     try {
-      const response = await fetch('http://localhost:5001/convert/ppt-to-pdf', {
+      let response = await fetch('http://localhost:5001/convert/ppt-to-pdf', {
         method: 'POST',
         body: formData,
       });
+
+      if (!response.ok) {
+        response = await fetch('https://trauma-chi.vercel.app/convert/ppt-to-pdf', {
+          method: 'POST',
+          body: formData,
+        });
+      }
 
       if (!response.ok) {
         const errorData = await response.json();

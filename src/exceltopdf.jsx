@@ -42,10 +42,17 @@ const ExcelToPdf = () => {
     formData.append('file', selectedFile);
 
     try {
-      const response = await fetch('http://localhost:5001/convert/excel-to-pdf', {
+      let response = await fetch('http://localhost:5001/convert/excel-to-pdf', {
         method: 'POST',
         body: formData,
       });
+
+      if (!response.ok) {
+        response = await fetch('https://trauma-chi.vercel.app/convert/excel-to-pdf', {
+          method: 'POST',
+          body: formData,
+        });
+      }
 
       if (!response.ok) {
         const errorData = await response.json();
