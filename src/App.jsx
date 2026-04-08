@@ -11,6 +11,7 @@ import ExcelToPdf from './exceltopdf';
 import IpynbToPdf from './ipynbtopdf';
 import PPTtoPDF from './ppttopdf';
 import PdfOCRSearchWithPdfLib from './searchimgpdf';
+import PDFEditor from './pdfeditor';
 
 function App() {
   const [currentSection, setCurrentSection] = useState(0);
@@ -145,6 +146,16 @@ function App() {
                   <div>Back</div>
                 </button>
                 <PdfOCRSearchWithPdfLib/>
+              </div>
+            );
+          case 12:
+            return (
+              <div>
+                <button style={{position: 'absolute',top: '10px',right: '10px',padding: '10px 20px',backgroundColor: '#007BFF',color: 'white',
+                  border: 'none', borderRadius: '5px',cursor: 'pointer',}} onClick={() => setCurrentSection(0)}>
+                  <div>Back</div>
+                </button>
+                <PDFEditor/>
               </div>
             );
         default:
@@ -316,6 +327,18 @@ function App() {
                   <button 
                     style={styles.protectedToolButton}
                     onClick={() => handleButtonClick(11)}
+                  >
+                    Use Tool
+                  </button>
+                </div>
+
+                <div style={styles.toolCard}>
+                  <div style={styles.toolIcon}>✏️</div>
+                  <h3 style={styles.toolTitle}>PDF Editor</h3>
+                  <p style={styles.toolDescription}>Erase content and add text to PDFs</p>
+                  <button 
+                    style={styles.toolButton}
+                    onClick={() => setCurrentSection(12)}
                   >
                     Use Tool
                   </button>
