@@ -12,6 +12,7 @@ import IpynbToPdf from './ipynbtopdf';
 import PPTtoPDF from './ppttopdf';
 import PdfOCRSearchWithPdfLib from './searchimgpdf';
 import PDFEditor from './pdfeditor';
+import PDFEncrypt from './pdfencrypt';
 
 function App() {
   const [currentSection, setCurrentSection] = useState(0);
@@ -156,6 +157,16 @@ function App() {
                   <div>Back</div>
                 </button>
                 <PDFEditor/>
+              </div>
+            );
+          case 13:
+            return (
+              <div>
+                <button style={{position: 'absolute',top: '10px',right: '10px',padding: '10px 20px',backgroundColor: '#007BFF',color: 'white',
+                  border: 'none', borderRadius: '5px',cursor: 'pointer',}} onClick={() => setCurrentSection(0)}>
+                  <div>Back</div>
+                </button>
+                <PDFEncrypt/>
               </div>
             );
         default:
@@ -339,6 +350,18 @@ function App() {
                   <button 
                     style={styles.toolButton}
                     onClick={() => setCurrentSection(12)}
+                  >
+                    Use Tool
+                  </button>
+                </div>
+
+                <div style={styles.toolCard}>
+                  <div style={styles.toolIcon}>🔒</div>
+                  <h3 style={styles.toolTitle}>Encrypt PDF</h3>
+                  <p style={styles.toolDescription}>Password-protect your PDF files</p>
+                  <button 
+                    style={styles.toolButton}
+                    onClick={() => setCurrentSection(13)}
                   >
                     Use Tool
                   </button>
