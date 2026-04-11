@@ -13,6 +13,7 @@ import PPTtoPDF from './ppttopdf';
 import PdfOCRSearchWithPdfLib from './searchimgpdf';
 import PDFEditor from './pdfeditor';
 import PDFEncrypt from './pdfencrypt';
+import PDFWatermark from './pdfwatermark';
 
 function App() {
   const [currentSection, setCurrentSection] = useState(0);
@@ -167,6 +168,16 @@ function App() {
                   <div>Back</div>
                 </button>
                 <PDFEncrypt/>
+              </div>
+            );
+          case 14:
+            return (
+              <div>
+                <button style={{position: 'absolute',top: '10px',right: '10px',padding: '10px 20px',backgroundColor: '#007BFF',color: 'white',
+                  border: 'none', borderRadius: '5px',cursor: 'pointer',}} onClick={() => setCurrentSection(0)}>
+                  <div>Back</div>
+                </button>
+                <PDFWatermark/>
               </div>
             );
         default:
@@ -362,6 +373,18 @@ function App() {
                   <button 
                     style={styles.toolButton}
                     onClick={() => setCurrentSection(13)}
+                  >
+                    Use Tool
+                  </button>
+                </div>
+
+                <div style={styles.toolCard}>
+                  <div style={styles.toolIcon}>💧</div>
+                  <h3 style={styles.toolTitle}>Watermark PDF</h3>
+                  <p style={styles.toolDescription}>Add text watermarks with custom style</p>
+                  <button 
+                    style={styles.toolButton}
+                    onClick={() => setCurrentSection(14)}
                   >
                     Use Tool
                   </button>
